@@ -198,7 +198,7 @@ module ActiveSupport #:nodoc:
       end
 
       def const_missing(const_name)
-        puts caller if const_name == :"WebhookSubscription"
+        puts caller if ENV['RAILS_ENV'] == "production" && const_name == :"WebhookSubscription"
         from_mod = anonymous? ? guess_for_anonymous(const_name) : self
         Dependencies.load_missing_constant(from_mod, const_name)
       end
@@ -354,7 +354,7 @@ module ActiveSupport #:nodoc:
       file_name = $` if file_name =~ /\.rb\z/
       expanded = File.expand_path(file_name)
       return if loaded.include?(expanded)
-      puts caller if expanded =~ /webhook_subscription$/
+      puts caller if ENV['RAILS_ENV'] == "production" && expanded =~ /webhook_subscription$/
 
       Dependencies.load_interlock do
         # Maybe it got loaded while we were waiting for our lock:
